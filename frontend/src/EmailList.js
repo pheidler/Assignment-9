@@ -12,12 +12,13 @@ const useStyles = makeStyles((theme) => ({
  * @return {object} JSX
  */
 function EmailList() {
-  const {mailbox} =
-    React.useContext(SharedContext);
+  const {mailbox} = React.useContext(SharedContext);
 
   /* API call to get emails */
 
   const classes = useStyles();
+  console.log(classes);
+  console.log(mailbox);
   return (
     <p>Help</p>
   );
