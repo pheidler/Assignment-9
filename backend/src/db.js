@@ -35,6 +35,17 @@ exports.selectMailbox = async (mailbox) => {
   return (rows);
 };
 
+exports.selectMailboxes = async () => {
+  const query = `
+    SELECT mailbox, COUNT (id)::INTEGER as emails
+    FROM mail
+    GROUP BY mailbox
+  `;
+  const {rows} = await pool.query(query);
+  console.log(rows);
+  return rows;
+}
+
 
 exports.updateEmail = async (id, updatedEmail) => {
   updatedEmail.starred = !updatedEmail.starred;

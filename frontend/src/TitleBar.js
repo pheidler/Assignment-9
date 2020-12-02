@@ -17,7 +17,7 @@ import SharedContext from './SharedContext';
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
-    zIndex: theme.zIndex.drawer +300,
+    zIndex: theme.zIndex.drawer +100,
   },
   menuButton: {
     marginRight: theme.spacing(0),

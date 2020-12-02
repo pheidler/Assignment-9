@@ -29,7 +29,9 @@ app.use(
 
 // Your routes go here
 app.get('/v0/mail', mail.getMailbox);
+app.get('/v0/mailboxes', mail.getMailboxes);
 app.post('/v0/mail/:id', mail.postMail);
+
 
 
 app.use((err, req, res, next) => {

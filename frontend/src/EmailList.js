@@ -56,8 +56,7 @@ function EmailList() {
 
   /* API call to get emails */
   useEffect(async () => {
-    const mailboxString = mailbox.toLowerCase();
-    await fetch(`http://localhost:3010/v0/mail?mailbox=${mailboxString}`)
+    await fetch(`http://localhost:3010/v0/mail?mailbox=${mailbox}`)
         .then((response) => {
           if (!response.ok) {
             throw response;
@@ -70,6 +69,7 @@ function EmailList() {
         .catch((error) => {
           console.log(error.toString());
         });
+    setDeprecated(false);
   }, [mailbox, deprecated]);
   const sortedEmails = mail.sort((a, b) => {
     const bDate = new Date(b.received);
@@ -176,7 +176,7 @@ function EmailList() {
         .catch((error) => {
           console.log(error.toString());
         });
-    setDeprecated(!deprecated);
+    setDeprecated(true);
   }
 }
 
