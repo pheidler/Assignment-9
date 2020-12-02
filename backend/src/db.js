@@ -13,7 +13,6 @@ const pool = new Pool({
 });
 
 exports.reset = async () => {
-  console.log('resetting');
   await run('sql/schema.sql');
   await run('sql/data.sql');
   await run('sql/indexes.sql');
@@ -28,8 +27,23 @@ const run = async (file) => {
 };
 
 exports.selectMailbox = async (mailbox) => {
-  const query = `SELECT mail FROM mail WHERE mailbox='${mailbox}'`;
-  //const query = 'SELECT * FROM dummy';
-  const { rows } = await pool.query(query);
+  const query = `
+    SELECT id, mail->'from' AS from, mail->'to' AS to, mail->'subject' AS subject, mail->'sent' AS sent, mail->'received' AS received, mail->'content' AS content, starred
+    FROM mail
+    WHERE mailbox='${mailbox}'`;
+  const {rows} = await pool.query(query);
   return (rows);
-}
+};
+
+
+exports.updateEmail = async (id, updatedEmail) => {
+  updatedEmail.starred = !updatedEmail.starred;
+  const query = `
+    UPDATE mail
+    SET starred = ${updatedEmail.starred}
+    WHERE id='${id}'`;
+
+  const result = await pool.query(query);
+
+  return result;
+};

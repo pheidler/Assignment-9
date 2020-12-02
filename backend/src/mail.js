@@ -3,9 +3,16 @@ const db = require('./db');
 
 /* Handles GET requests to /v0/mail */
 exports.getMailbox = async (req, res) => {
+  //await db.reset();
   const mailbox = req.query.mailbox;
-  console.log('here1');
   const emails = await db.selectMailbox(mailbox);
-  console.log(emails);
+  res.status(200).json(emails);
+};
 
+/* Handles POST requests to /v0/mail/:id */
+exports.postMail = async (req, res) => {
+  const id = req.params['id'];
+  const email = req.body;
+  const result = await db.updateEmail(id, email);
+  res.status(200).json({'code': 200, 'message': 'Success: Email has been updated.'});
 };
