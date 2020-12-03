@@ -1,4 +1,6 @@
 import React from 'react';
+import {useHistory} from 'react-router-dom';
+
 import SharedContext from './SharedContext';
 import Toolbar from '@material-ui/core/Toolbar';
 import MailIcon from '@material-ui/icons/Mail';
@@ -10,9 +12,9 @@ import IconButton from '@material-ui/core/IconButton';
 import Paper from '@material-ui/core/Paper';
 import Avatar from '@material-ui/core/Avatar';
 import Typography from '@material-ui/core/Typography';
-import StarIcon from '@material-ui/icons/Star';
-import StarBorderIcon from '@material-ui/icons/StarBorder';
+import ReplyIcon from '@material-ui/icons/Reply';
 import ListItemText from '@material-ui/core/ListItemText';
+import Favorite from './Favorite';
 
 
 import {makeStyles} from '@material-ui/core/styles';
@@ -43,12 +45,21 @@ const useStyles = makeStyles((theme) => ({
 function ViewEmail() {
   const classes = useStyles();
   const {selectedEmail, mailbox} = React.useContext(SharedContext);
+  const history = useHistory();
+
   const currentDate = new Date();
   const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep',
     'Oct', 'Nov', 'Dec'];
-  console.log(selectedEmail);
-  console.log(classes);
 
+
+  /* Ask about during office hours */
+  if (Object.keys(selectedEmail).length === 0 || selectedEmail === undefined) {
+    console.log('returning to /');
+    history.push('/', selectedEmail);
+    return;
+  }
+
+  console.log(selectedEmail);
   return (
     <Paper className={classes.paper}>
       <Toolbar className={classes.header}>
@@ -57,6 +68,7 @@ function ViewEmail() {
             <IconButton
               color="inherit"
               edge="start"
+              onClick={() => history.push('/')}
             >
               <ArrowBackIosIcon/>
             </IconButton>
@@ -65,6 +77,7 @@ function ViewEmail() {
             <IconButton
               color="inherit"
               edge="end"
+              onClick={() => markAsUnread()}
             >
               <MailIcon/>
             </IconButton>
@@ -73,6 +86,7 @@ function ViewEmail() {
             <IconButton
               color="inherit"
               edge="end"
+              onClick={() => saveInbox()}
             >
               <SaveAltIcon/>
             </IconButton>
@@ -81,6 +95,7 @@ function ViewEmail() {
             <IconButton
               color="inherit"
               edge="end"
+              onClick={() => deleteEmail()}
             >
               <DeleteIcon/>
             </IconButton>
@@ -124,19 +139,42 @@ function ViewEmail() {
           className={classes.selectedEmailDate}>
           {parseDate(selectedEmail.received)}
         </Typography>
-        {
-          selectedEmail.starred ?
-          <StarIcon
-            onClick={()=>setFavorite(selectedEmail)}
-            className={classes.starIcon}/> :
-          <StarBorderIcon
-            onClick={()=>setFavorite(selectedEmail)}
-            className={classes.starIcon}/>
-        }
+        <Favorite email={selectedEmail}/>
+        <ReplyIcon
+          onClick={()=>replyTo()}/>
 
       </Box>
     </Paper>
   );
+  /**
+   * Reply to selected email
+   * @param {object} email
+   */
+  function replyTo() {
+    console.log('Replying to selected email');
+  }
+  /**
+   * Delete email object
+   * @param {object} email
+   */
+  function deleteEmail() {
+    console.log('deleting');
+  }
+  /**
+   * Delete email object
+   * @param {object} email
+   */
+  function saveInbox() {
+    console.log('Saving to inbox');
+  }
+  /**
+   * Delete email object
+   * @param {object} email
+   */
+  function markAsUnread() {
+    console.log('Marking as unread');
+  }
+
   /**
    * Parse date object
    * @param {object} date
