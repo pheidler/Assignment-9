@@ -8,6 +8,7 @@ import Avatar from '@material-ui/core/Avatar';
 import StarIcon from '@material-ui/icons/Star';
 import StarBorderIcon from '@material-ui/icons/StarBorder';
 import Box from '@material-ui/core/Box';
+import {useHistory} from 'react-router-dom';
 
 
 import SharedContext from './SharedContext';
@@ -47,9 +48,10 @@ const useStyles = makeStyles((theme) => ({
  * @return {object} JSX
  */
 function EmailList() {
-  const {mailbox} = React.useContext(SharedContext);
+  const {mailbox, setSelectedEmail} = React.useContext(SharedContext);
   const [mail, setMail] = useState([]);
   const [deprecated, setDeprecated] = useState(false);
+  const history = useHistory();
   const currentDate = new Date();
   const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep',
     'Oct', 'Nov', 'Dec'];
@@ -87,7 +89,8 @@ function EmailList() {
         <ListItem
           key={email.id}
           button
-          alignItems="flex-start">
+          alignItems="flex-start"
+          onClick={() => viewEmail(email)}>
           <Avatar
             className={classes.profilePicture}>
             {email.from.name[0]}
@@ -177,6 +180,16 @@ function EmailList() {
           console.log(error.toString());
         });
     setDeprecated(true);
+  }
+
+  /**
+   * View email
+   * @param {object} email
+   * @param {object} history
+   */
+  async function viewEmail(email) {
+    setSelectedEmail(email);
+    history.push('/mailView');
   }
 }
 
