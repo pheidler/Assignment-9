@@ -41,6 +41,22 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+  /mailboxes:
+    get:
+      description: Returns all mailboxes and number of unread emails
+      responses:
+        200:
+          description: Mailboxes
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Mailboxes'
+        default:
+          description: Unexpected Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
   /mail/{id}:
     post:
       parameters:
@@ -81,6 +97,17 @@ paths:
 
 components:
   schemas:
+    Mailboxes:
+      type: array
+      items:
+        $ref: '#/components/schemas/Mailbox'
+    Mailbox:
+      type: object
+      properties:
+        mailbox:
+          type: string
+        emails:
+          type: integer
     Success:
       required:
         - code

@@ -6,6 +6,7 @@ const fs = require('fs');
 const path = require('path');
 const OpenApiValidator = require('express-openapi-validator');
 
+const auth = require('./auth');
 const mail = require('./mail');
 
 
@@ -17,7 +18,10 @@ app.use(express.urlencoded({extended: false}));
 const apiSpec = path.join(__dirname, '../api/openapi.yaml');
 
 const apidoc = yaml.safeLoad(fs.readFileSync(apiSpec, 'utf8'));
+
 app.use('/v0/api-docs', swaggerUi.serve, swaggerUi.setup(apidoc));
+app.post('/v0/authenticate', auth.authenticate);
+
 
 app.use(
     OpenApiValidator.middleware({
@@ -29,7 +33,9 @@ app.use(
 
 // Your routes go here
 app.get('/v0/mail', mail.getMailbox);
+app.get('/v0/mailboxes', mail.getMailboxes);
 app.post('/v0/mail/:id', mail.postMail);
+
 
 
 app.use((err, req, res, next) => {

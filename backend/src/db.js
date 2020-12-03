@@ -1,5 +1,7 @@
 const fs = require('fs');
 const {Pool} = require('pg');
+var bcrypt = require('bcrypt');
+
 
 require('dotenv').config();
 process.env.POSTGRES_DB='dev';
@@ -25,7 +27,20 @@ const run = async (file) => {
     await pool.query(statement);
   }
 };
-
+exports.checkHash = async (email, password) => {
+  const query = `
+    SELECT *
+    FROM users
+    WHERE email='${email}'
+  `;
+  const {rows} = await pool.query(query);
+  hashedPassword = rows[0].passwordhash;
+  if (bcrypt.compareSync(password, hashedPassword)) {
+    return rows[0];
+  } else {
+    return undefined;
+  }
+}
 exports.selectMailbox = async (mailbox) => {
   const query = `
     SELECT id, mail->'from' AS from, mail->'to' AS to, mail->'subject' AS subject, mail->'sent' AS sent, mail->'received' AS received, mail->'content' AS content, starred
@@ -34,6 +49,17 @@ exports.selectMailbox = async (mailbox) => {
   const {rows} = await pool.query(query);
   return (rows);
 };
+
+exports.selectMailboxes = async () => {
+  const query = `
+    SELECT mailbox, COUNT (id)::INTEGER as emails
+    FROM mail
+    GROUP BY mailbox
+  `;
+  const {rows} = await pool.query(query);
+  console.log(rows);
+  return rows;
+}
 
 
 exports.updateEmail = async (id, updatedEmail) => {
