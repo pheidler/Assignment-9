@@ -53,6 +53,7 @@ function MailboxList() {
   const classes = useStyles();
   const {mailbox, selectMailbox} = React.useContext(SharedContext);
 
+
   return (
     <div className={classes.drawerPaper}>
       <Toolbar>
