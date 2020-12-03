@@ -3,6 +3,8 @@ const db = require('./db');
 
 /* Handles GET requests to /v0/mail */
 exports.getMailbox = async (req, res) => {
+  console.log('this is happening');
+
   //await db.reset();
   const mailbox = req.query.mailbox;
   const emails = await db.selectMailbox(mailbox);

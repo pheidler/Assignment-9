@@ -4,6 +4,7 @@ import {makeStyles} from '@material-ui/core/styles';
 import ViewEmail from './ViewEmail';
 import Main from './Main';
 import SharedContext from './SharedContext';
+import Login from './Login';
 import {
   BrowserRouter as Router,
   Switch,
@@ -42,6 +43,9 @@ function App() {
         <Router>
           <Switch>
             <Route path="/" exact>
+              <Login />
+            </Route>
+            <Route path="/main">
               <Main />
             </Route>
             <Route path="/mailView">
