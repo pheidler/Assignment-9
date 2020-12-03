@@ -1,11 +1,15 @@
 import React from 'react';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import {makeStyles} from '@material-ui/core/styles';
-
+import ViewEmail from './ViewEmail';
+import Main from './Main';
 import SharedContext from './SharedContext';
-import TitleBar from './TitleBar';
-import Content from './Content';
-import MailboxDrawer from './MailboxDrawer';
+import Login from './Login';
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+} from 'react-router-dom';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -20,27 +24,35 @@ const useStyles = makeStyles((theme) => ({
  * @return {object} JSX
  */
 function App() {
+  const classes = useStyles();
   const [mailbox, setMailbox] = React.useState('Inbox');
   const [drawerOpen, setDrawerOpen] = React.useState(false);
-
+  const [selectedEmail, setSelectedEmail] = React.useState({});
   const toggleDrawerOpen = () => {
     setDrawerOpen(!drawerOpen);
   };
-
-  const classes = useStyles();
-
   return (
     <div className={classes.root}>
       <CssBaseline/>
       <SharedContext.Provider value= {{
         mailbox, setMailbox,
         drawerOpen, setDrawerOpen,
-        toggleDrawerOpen,
+        toggleDrawerOpen, selectedEmail, setSelectedEmail,
       }}
       >
-        <MailboxDrawer/>
-        <TitleBar/>
-        <Content/>
+        <Router>
+          <Switch>
+            <Route path="/" exact>
+              <Login />
+            </Route>
+            <Route path="/main">
+              <Main />
+            </Route>
+            <Route path="/mailView">
+              <ViewEmail />
+            </Route>
+          </Switch>
+        </Router>
       </SharedContext.Provider>
     </div>
   );
