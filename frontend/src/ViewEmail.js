@@ -68,7 +68,7 @@ function ViewEmail() {
             <IconButton
               color="inherit"
               edge="start"
-              onClick={() => history.push('/')}
+              onClick={() => history.push('/main')}
             >
               <ArrowBackIosIcon/>
             </IconButton>

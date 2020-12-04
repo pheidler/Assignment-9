@@ -27,6 +27,7 @@ const useStyles = makeStyles((theme) => ({
   starIcon: {
     marginTop: '10px',
     marginLeft: '30px',
+
   },
   profilePicture: {
     marginLeft: '-10px',
@@ -50,10 +51,10 @@ function Favorite(props) {
       {
       starred ?
       <StarIcon
-        onClick={()=>setFavorite(props.email, event)}
+        onClickCapture={()=>setFavorite(props.email, event)}
         className={classes.starIcon}/> :
       <StarBorderIcon
-        onClick={()=>setFavorite(props.email, event)}
+        onClickCapture={()=>setFavorite(props.email, event)}
         className={classes.starIcon}/>
       }
     </>
