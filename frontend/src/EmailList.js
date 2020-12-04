@@ -59,7 +59,21 @@ function EmailList() {
 
   /* API call to get emails */
   useEffect(async () => {
-    await fetch(`http://localhost:3010/v0/mail?mailbox=${mailbox}`)
+    const item = localStorage.getItem('user');
+    console.log(JSON.parse(item));
+    if (!item) {
+      console.log('Not signed in!');
+      return;
+    }
+    const user = JSON.parse(item);
+    const bearerToken = user ? user.accessToken : '';
+    await fetch(`http://localhost:3010/v0/mail?mailbox=${mailbox}`, {
+      method: 'get',
+      headers: new Headers({
+        'Authorization': `Bearer ${bearerToken}`,
+        'Content-Type': 'application/x-www-form-urlencoded',
+      }),
+    })
         .then((response) => {
           if (!response.ok) {
             throw response;
@@ -70,6 +84,9 @@ function EmailList() {
           setMail(json);
         })
         .catch((error) => {
+          if (error.status === 401) {
+            history.push('/');
+          }
           console.log(error.toString());
         });
     setDeprecated(false);

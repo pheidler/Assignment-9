@@ -13,7 +13,7 @@ exports.authenticate = async (req, res) => {
     const accessToken = jwt.sign(
       {email: user.email, role: user.role},
       secrets.accessToken, {
-        expiresIn: '10',
+        expiresIn: '10m',
         algorithm: 'HS256'
       });
     res.json({email: user.email, accessToken: accessToken});
@@ -23,12 +23,15 @@ exports.authenticate = async (req, res) => {
 };
 
 exports.check = (req, res, next) => {
-  console.log('authenticating');
+  console.log('authenticating2');
   const authHeader = req.headers.authorization;
+
   if (authHeader) {
     const token = authHeader.split(' ')[1];
+
     jwt.verify(token, secrets.accessToken, (err, user) => {
       if (err) {
+        console.log(err);
         return res.sendStatus(403);
       }
       req.user = user;
