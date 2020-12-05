@@ -51,12 +51,11 @@ function ViewEmail() {
   const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep',
     'Oct', 'Nov', 'Dec'];
 
-
-  /* Ask about during office hours */
+  
+  /* If user manually refreshes, just return to inbox view */
   if (Object.keys(selectedEmail).length === 0 || selectedEmail === undefined) {
-    console.log('returning to /');
-    history.push('/', selectedEmail);
-    return;
+    history.push('/main');
+    return null;
   }
 
   console.log(selectedEmail);

@@ -41,28 +41,37 @@ exports.checkHash = async (email, password) => {
     return undefined;
   }
 }
-exports.selectMailbox = async (mailbox) => {
+exports.selectMailbox = async (mailbox, user) => {
   const query = `
     SELECT id, mail->'from' AS from, mail->'to' AS to, mail->'subject' AS subject, mail->'sent' AS sent, mail->'received' AS received, mail->'content' AS content, starred
     FROM mail
-    WHERE mailbox='${mailbox}'`;
+    WHERE mailbox='${mailbox}' AND email='${user}'`;
   const {rows} = await pool.query(query);
   return (rows);
 };
 
-exports.selectMailboxes = async () => {
+exports.selectMailboxes = async (user) => {
   const query = `
     SELECT mailbox, COUNT (id)::INTEGER as emails
     FROM mail
+    WHERE email='${user}' AND unread=true
     GROUP BY mailbox
   `;
   const {rows} = await pool.query(query);
-  console.log(rows);
   return rows;
 }
 
+exports.selectUserMailboxes = async (user) => {
+  const query = `
+    SELECT mailboxes
+    FROM users
+    WHERE email='${user}'
+  `;
+  const {rows} = await pool.query(query);
+  return rows[0].mailboxes;
+}
 
-exports.updateEmail = async (id, updatedEmail) => {
+exports.updateStarred = async (id, updatedEmail) => {
   updatedEmail.starred = !updatedEmail.starred;
   const query = `
     UPDATE mail

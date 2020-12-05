@@ -1,6 +1,5 @@
 const jwt = require('jsonwebtoken');
 const secrets = require('../sql/secrets');
-var users = require('../sql/users.json');
 const db = require('./db');
 
 

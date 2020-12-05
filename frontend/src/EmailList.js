@@ -60,7 +60,6 @@ function EmailList() {
   /* API call to get emails */
   useEffect(async () => {
     const item = localStorage.getItem('user');
-    console.log(JSON.parse(item));
     if (!item) {
       console.log('Not signed in!');
       return;
@@ -84,7 +83,7 @@ function EmailList() {
           setMail(json);
         })
         .catch((error) => {
-          if (error.status === 401) {
+          if (error.status >= 400) {
             history.push('/');
           }
           console.log(error.toString());

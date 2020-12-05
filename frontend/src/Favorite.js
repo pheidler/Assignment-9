@@ -7,34 +7,10 @@ import {makeStyles} from '@material-ui/core/styles';
 
 
 const useStyles = makeStyles((theme) => ({
-  block: {
-    display: 'block',
-    textOverflow: 'ellipsis',
-    overflow: 'hidden',
-    whiteSpace: 'nowrap',
-  },
-  emailList: {
-    width: '100%',
-  },
-  dateColumn: {
-    minWidth: '15%',
-    display: 'block',
-    position: 'relative',
-  },
-  emailDate: {
-    right: '0px',
-  },
   starIcon: {
     marginTop: '10px',
     marginLeft: '30px',
-
   },
-  profilePicture: {
-    marginLeft: '-10px',
-    marginRight: '10px',
-    marginTop: '10px',
-  },
-
 }));
 
 /**
@@ -60,19 +36,23 @@ function Favorite(props) {
     </>
   );
   /**
-   * Parse date object
+   * Select/unselect email as favorite
    * @param {object} email
    * @param {object} event
    */
   async function setFavorite(email, event) {
-    console.log('this is happening1');
     event.stopPropagation();
+
+    const item = localStorage.getItem('user');
+    const user = JSON.parse(item);
+    const bearerToken = user ? user.accessToken : '';
     await fetch(`http://localhost:3010/v0/mail/${email['id']}`, {
       method: 'POST',
+      body: JSON.stringify(email),
       headers: {
         'Content-Type': 'application/json',
+        'Authorization': `Bearer ${bearerToken}`,
       },
-      body: JSON.stringify(email),
     }).then((response) => {
       if (!response.ok) {
         throw response;
@@ -80,8 +60,13 @@ function Favorite(props) {
       return response.json();
     })
         .catch((error) => {
+          console.log(error);
+          if (error.status >= 401) {
+            history.push('/');
+          }
           console.log(error.toString());
         });
+
     setStarred(!starred);
   }
 }
