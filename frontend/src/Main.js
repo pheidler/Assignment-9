@@ -11,12 +11,6 @@ import MailboxDrawer from './MailboxDrawer';
  * @return {object} JSX
  */
 function Main() {
-  const item = localStorage.getItem('user');
-  console.log(item);
-  console.log(JSON.parse(item));
-  if (!item) {
-    console.log('not signed in!!');
-  }
   return (
     <>
       <MailboxDrawer/>

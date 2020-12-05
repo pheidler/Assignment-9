@@ -32,9 +32,9 @@ app.use(
 );
 
 // Your routes go here
-app.get('/v0/mail', mail.getMailbox);
-app.get('/v0/mailboxes', mail.getMailboxes);
-app.post('/v0/mail/:id', mail.postMail);
+app.get('/v0/mail', auth.check, mail.getMailbox);
+app.get('/v0/mailboxes', auth.check, mail.getMailboxes);
+app.post('/v0/mail/:id', auth.check, mail.postMail);
 
 
 
