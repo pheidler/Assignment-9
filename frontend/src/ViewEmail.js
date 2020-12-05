@@ -51,7 +51,7 @@ function ViewEmail() {
   const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep',
     'Oct', 'Nov', 'Dec'];
 
-  
+
   /* If user manually refreshes, just return to inbox view */
   if (Object.keys(selectedEmail).length === 0 || selectedEmail === undefined) {
     history.push('/main');
