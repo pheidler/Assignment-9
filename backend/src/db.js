@@ -43,7 +43,7 @@ exports.checkHash = async (email, password) => {
 }
 exports.selectMailbox = async (mailbox, user) => {
   const query = `
-    SELECT id, mail->'from' AS from, mail->'to' AS to, mail->'subject' AS subject, mail->'sent' AS sent, mail->'received' AS received, mail->'content' AS content, starred
+    SELECT id, mail->'from' AS from, mail->'to' AS to, mail->'subject' AS subject, mail->'sent' AS sent, mail->'received' AS received, mail->'content' AS content, starred, unread
     FROM mail
     WHERE mailbox='${mailbox}' AND email='${user}'`;
   const {rows} = await pool.query(query);
@@ -71,11 +71,10 @@ exports.selectUserMailboxes = async (user) => {
   return rows[0].mailboxes;
 }
 
-exports.updateStarred = async (id, updatedEmail) => {
-  updatedEmail.starred = !updatedEmail.starred;
+exports.updateEmail = async (id, updatedEmail) => {
   const query = `
     UPDATE mail
-    SET starred = ${updatedEmail.starred}
+    SET starred = ${updatedEmail.starred}, unread = ${updatedEmail.unread}
     WHERE id='${id}'`;
 
   const result = await pool.query(query);

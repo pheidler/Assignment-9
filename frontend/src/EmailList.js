@@ -2,7 +2,6 @@ import React, {useEffect, useState} from 'react';
 import {makeStyles} from '@material-ui/core/styles';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
 import Typography from '@material-ui/core/Typography';
 import Avatar from '@material-ui/core/Avatar';
 import Favorite from './Favorite';
@@ -40,6 +39,9 @@ const useStyles = makeStyles((theme) => ({
     marginRight: '10px',
     marginTop: '10px',
   },
+  bold: {
+    fontWeight: 'bold',
+  },
 
 }));
 
@@ -57,15 +59,16 @@ function EmailList() {
   const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep',
     'Oct', 'Nov', 'Dec'];
 
+  const item = localStorage.getItem('user');
+  if (!item) {
+    console.log('Not signed in!');
+    return;
+  }
+  const user = JSON.parse(item);
+  const bearerToken = user ? user.accessToken : '';
+
   /* API call to get emails */
   useEffect(async () => {
-    const item = localStorage.getItem('user');
-    if (!item) {
-      console.log('Not signed in!');
-      return;
-    }
-    const user = JSON.parse(item);
-    const bearerToken = user ? user.accessToken : '';
     await fetch(`http://localhost:3010/v0/mail?mailbox=${mailbox}`, {
       method: 'get',
       headers: new Headers({
@@ -95,6 +98,7 @@ function EmailList() {
     const aDate = new Date(a.received);
     return bDate - aDate;
   });
+  console.log(sortedEmails);
   const classes = useStyles();
   return (
     <List
@@ -112,29 +116,44 @@ function EmailList() {
             className={classes.profilePicture}>
             {email.from.name[0]}
           </Avatar>
-          <ListItemText
-            primary={email.from.name}
-            secondary={
-              <React.Fragment>
+          <Box className={classes.dateColumn}>
+            {
+              email.unread ?
+              <>
                 <Typography
-                  component="span"
-                  variant="body2"
-                  className={classes.block}
                   color="textPrimary"
-                >
-                  {email.subject}
-                  <br></br>
+                  className={classes.bold}>
+                  {email.from.name}
                 </Typography>
                 <Typography
-                  component="span"
-                  variant="body2"
-                  className={classes.block}
-                  color="textSecondary"
-                >
-                  {email.content}
+                  color="textPrimary"
+                  className={classes.bold}>
+                  {email.subject}
                 </Typography>
-              </React.Fragment>
-            }/>
+              </> :
+                <>
+                  <Typography
+                    color="textPrimary">
+                    {email.from.name}
+                  </Typography>
+                  <Typography
+                    color="textPrimary">
+                    {email.subject}
+                  </Typography>
+                </>
+            }
+
+            <Typography
+              component="span"
+              variant="body2"
+              className={classes.block}
+              color="textSecondary"
+            >
+              {email.content}
+            </Typography>
+          </Box>
+
+
           <Box className={classes.dateColumn}>
             <Typography
               component="span"
@@ -172,6 +191,29 @@ function EmailList() {
    * @param {object} email
    */
   async function viewEmail(email) {
+    email.unread = false;
+    await fetch(`http://localhost:3010/v0/mail/${email['id']}`, {
+      method: 'POST',
+      body: JSON.stringify(email),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${bearerToken}`,
+      },
+    }).then((response) => {
+      if (!response.ok) {
+        throw response;
+      }
+      return response.json();
+    })
+        .catch((error) => {
+          console.log(error);
+          if (error.status >= 401) {
+            history.push('/');
+          }
+          console.log(error.toString());
+        });
+
+
     setSelectedEmail(email);
     history.push('/mailView');
   }
