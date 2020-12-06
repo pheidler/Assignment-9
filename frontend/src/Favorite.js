@@ -22,6 +22,10 @@ function Favorite(props) {
   const classes = useStyles();
   const [starred, setStarred] = useState(props.email.starred);
 
+  const item = localStorage.getItem('user');
+  const user = JSON.parse(item);
+  const bearerToken = user ? user.accessToken : '';
+
   return (
     <>
       {
@@ -43,9 +47,8 @@ function Favorite(props) {
   async function setFavorite(email, event) {
     event.stopPropagation();
 
-    const item = localStorage.getItem('user');
-    const user = JSON.parse(item);
-    const bearerToken = user ? user.accessToken : '';
+    email.starred = !email.starred;
+
     await fetch(`http://localhost:3010/v0/mail/${email['id']}`, {
       method: 'POST',
       body: JSON.stringify(email),

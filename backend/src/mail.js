@@ -22,7 +22,9 @@ exports.getMailboxes = async (req, res) => {
 exports.postMail = async (req, res) => {
   const id = req.params['id'];
   const email = req.body;
-  const result = await db.updateStarred(id, email);
+  console.log(email);
+
+  const result = await db.updateEmail(id, email);
   res.status(200).json({'code': 200, 'message': 'Success: Email has been updated.'});
 };
 

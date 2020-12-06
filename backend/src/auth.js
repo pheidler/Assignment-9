@@ -22,7 +22,6 @@ exports.authenticate = async (req, res) => {
 };
 
 exports.check = (req, res, next) => {
-  console.log('authenticating2');
   const authHeader = req.headers.authorization;
 
   if (authHeader) {
