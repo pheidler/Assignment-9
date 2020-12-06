@@ -43,14 +43,15 @@ function Login() {
 
   return (
     <form onSubmit={onSubmit}>
-      <h2 id='welcome'>CSE183 Authenticated Books Example</h2>
+      <h2 id='welcome'>Login</h2>
       <input
         type="email"
         name="email"
-        placeholder="EMail"
+        placeholder="Email Address"
         onChange={handleInputChange}
         required
       />
+      <br></br>
       <input
         type="password"
         name="password"
@@ -58,7 +59,8 @@ function Login() {
         onChange={handleInputChange}
         required
       />
-      <input type="submit" value="Submit"/>
+      <br></br>
+      <input type="submit" value="Sign In"/>
     </form>
   );
 }
