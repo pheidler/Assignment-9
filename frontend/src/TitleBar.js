@@ -8,6 +8,7 @@ import MailOutlineIcon from '@material-ui/icons/MailOutline';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import SearchIcon from '@material-ui/icons/Search';
 import InputBase from '@material-ui/core/InputBase';
+import {useHistory} from 'react-router-dom';
 
 
 import Box from '@material-ui/core/Box';
@@ -69,8 +70,9 @@ const useStyles = makeStyles((theme) => ({
  * @return {oject} JSX
  */
 function TitleBar() {
-  const {mailbox, toggleDrawerOpen} = React.useContext(SharedContext);
-  console.log(mailbox);
+  const {toggleDrawerOpen} = React.useContext(SharedContext);
+  const history = useHistory();
+
 
   const classes = useStyles();
   return (
@@ -107,6 +109,7 @@ function TitleBar() {
               color="inherit"
               edge="end"
               className='composeButton'
+              onClick={() => composeEmail()}
             >
               <MailOutlineIcon />
             </IconButton>
@@ -125,6 +128,15 @@ function TitleBar() {
       </Toolbar>
     </AppBar>
   );
+
+  /* Helper functions */
+
+  /**
+   * Compose email
+   */
+  function composeEmail() {
+    history.push('/compose');
+  }
 }
 
 export default TitleBar;

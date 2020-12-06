@@ -5,6 +5,8 @@ import ViewEmail from './ViewEmail';
 import Main from './Main';
 import SharedContext from './SharedContext';
 import Login from './Login';
+import Compose from './Compose';
+
 import {
   BrowserRouter as Router,
   Switch,
@@ -50,6 +52,9 @@ function App() {
             </Route>
             <Route path="/mailView">
               <ViewEmail />
+            </Route>
+            <Route path="/compose">
+              <Compose />
             </Route>
           </Switch>
         </Router>
