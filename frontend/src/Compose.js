@@ -162,8 +162,7 @@ function Compose() {
           }
           console.log(error.toString());
         });
-
-    console.log('sending new email');
+    history.push('/main');
   }
 }
 
