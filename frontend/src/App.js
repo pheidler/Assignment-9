@@ -30,6 +30,7 @@ function App() {
   const [mailbox, setMailbox] = React.useState('Inbox');
   const [drawerOpen, setDrawerOpen] = React.useState(false);
   const [selectedEmail, setSelectedEmail] = React.useState({});
+  const [user, setUser] = React.useState({});
   const toggleDrawerOpen = () => {
     setDrawerOpen(!drawerOpen);
   };
@@ -40,6 +41,7 @@ function App() {
         mailbox, setMailbox,
         drawerOpen, setDrawerOpen,
         toggleDrawerOpen, selectedEmail, setSelectedEmail,
+        user, setUser,
       }}
       >
         <Router>

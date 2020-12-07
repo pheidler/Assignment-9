@@ -13,6 +13,21 @@ servers:
   - url: http://localhost:3010/v0
 
 paths:
+  /user:
+    get:
+      parameters:
+        - in: query
+          name: email
+          schema:
+            type: string
+          description: Logged in user
+      responses:
+        200:
+          description: User data response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
   /mail:
     get:
       parameters:
@@ -41,6 +56,35 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+    post:
+      description: Send email to other user in the system
+      requestBody:
+        description: Updated email
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SentEmail'
+      responses:
+        200:
+          description: Successfully sent
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Success'
+        404:
+          description: User cannot be found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        default:
+          description: Unexpected Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
   /mailboxes:
     get:
       description: Returns all mailboxes and number of unread emails
@@ -122,7 +166,34 @@ components:
       type: array
       items:
         $ref: '#/components/schemas/Email'
-
+    SentEmail:
+      type: object
+      properties:
+        from:
+          type: object
+          properties:
+            name:
+              type: string
+            email:
+              type: string
+              format: email
+        to:
+          type: object
+          properties:
+            name:
+              type: string
+            email:
+              type: string
+              format: email
+        subject:
+          type: string
+        content:
+          type: string
+      required:
+        - from
+        - to
+        - subject
+        - content
     Email:
       type: object
       properties:
@@ -157,6 +228,8 @@ components:
           type: string
         starred:
           type: boolean
+        unread:
+          type: boolean
       required:
         - id
         - from
@@ -164,6 +237,20 @@ components:
         - subject
         - sent
         - received
+        - starred
+        - unread
+    User:
+      properties:
+        email:
+          type: string
+          format: email
+        profilePicture:
+          type: string
+          format: uri
+        name:
+          type: string
+        showAvatar:
+          type: boolean
     Error:
       required:
         - code
@@ -174,3 +261,11 @@ components:
           format: int32
         message:
           type: string
+  securitySchemes:
+    bearerAuth:            # arbitrary name for the security scheme
+      type: http
+      scheme: bearer
+      bearerFormat: JWT    # optional, arbitrary value for documentation purposes
+
+security:
+  - bearerAuth: []         # use the same name as above

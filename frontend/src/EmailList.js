@@ -21,6 +21,7 @@ const useStyles = makeStyles((theme) => ({
   },
   emailList: {
     width: '100%',
+    height: '100vh',
   },
   dateColumn: {
     minWidth: '15%',
@@ -53,7 +54,6 @@ function EmailList() {
   const {mailbox,
     setSelectedEmail} = React.useContext(SharedContext);
   const [mail, setMail] = useState([]);
-  const [deprecated, setDeprecated] = useState(false);
   const history = useHistory();
   const currentDate = new Date();
   const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep',
@@ -64,8 +64,8 @@ function EmailList() {
     console.log('Not signed in!');
     return;
   }
-  const user = JSON.parse(item);
-  const bearerToken = user ? user.accessToken : '';
+  const storedInfo = JSON.parse(item);
+  const bearerToken = storedInfo ? storedInfo.accessToken : '';
 
   /* API call to get emails */
   useEffect(async () => {
@@ -91,14 +91,12 @@ function EmailList() {
           }
           console.log(error.toString());
         });
-    setDeprecated(false);
-  }, [mailbox, deprecated]);
+  }, [mailbox]);
   const sortedEmails = mail.sort((a, b) => {
     const bDate = new Date(b.received);
     const aDate = new Date(a.received);
     return bDate - aDate;
   });
-  console.log(sortedEmails);
   const classes = useStyles();
   return (
     <List

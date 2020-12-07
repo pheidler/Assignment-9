@@ -22,12 +22,27 @@ exports.getMailboxes = async (req, res) => {
 exports.postMail = async (req, res) => {
   const id = req.params['id'];
   const email = req.body;
-  console.log(email);
 
   const result = await db.updateEmail(id, email);
   res.status(200).json({'code': 200, 'message': 'Success: Email has been updated.'});
 };
 
+exports.postNewMail = async (req, res) => {
+  const from = req.params['email'];
+  const email = req.body;
+
+  const result = await db.insertEmail(email);
+  console.log(result);
+  res.status(200).json({'code': 200, 'message': 'Success: Email has been sent.'});
+}
+
+exports.getUser = async (req, res) => {
+  const email = req.query.email;
+  const result = await db.selectUser(email);
+  res.status(200).json(result);
+
+
+}
 /* Helper functions */
 
 function mergeMailboxes(mailboxesCount, mailboxes) {
