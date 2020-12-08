@@ -6,6 +6,7 @@ import Main from './Main';
 import SharedContext from './SharedContext';
 import Login from './Login';
 import Compose from './Compose';
+import Profile from './Profile';
 
 import {
   BrowserRouter as Router,
@@ -57,6 +58,9 @@ function App() {
             </Route>
             <Route path="/compose">
               <Compose />
+            </Route>
+            <Route path="/profile">
+              <Profile />
             </Route>
           </Switch>
         </Router>

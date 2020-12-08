@@ -116,6 +116,7 @@ function TitleBar() {
           </Box>
           <Box>
             <IconButton
+              onClick={()=>history.push('/profile')}
               color="inherit"
               edge="end"
               className='profileButton'
