@@ -28,9 +28,6 @@ const useStyles = makeStyles((theme) => ({
     display: 'block',
     position: 'relative',
   },
-  emailDate: {
-    right: '0px',
-  },
   starIcon: {
     marginTop: '10px',
     marginLeft: '30px',
@@ -42,6 +39,21 @@ const useStyles = makeStyles((theme) => ({
   },
   bold: {
     fontWeight: 'bold',
+  },
+  outer: {
+    width: '100%',
+    display: 'flex',
+  },
+  grow: {
+    flexGrow: 1,
+    display: 'block',
+    textOverflow: 'ellipsis',
+    overflow: 'hidden',
+    whiteSpace: 'nowrap',
+  },
+  inner: {
+    display: 'block',
+
   },
 
 }));
@@ -110,12 +122,15 @@ function EmailList() {
           button
           alignItems="flex-start"
           onClick={() => viewEmail(email)}>
-          <Avatar
-            className={classes.profilePicture}>
-            {email.from.name[0]}
-          </Avatar>
-          <Box className={classes.dateColumn}>
-            {
+          <Box className={classes.outer}>
+            <Box className={classes.inner}>
+              <Avatar
+                className={classes.profilePicture}>
+                {email.from.name[0]}
+              </Avatar>
+            </Box>
+            <Box className={classes.grow}>
+              {
               email.unread ?
               <>
                 <Typography
@@ -139,28 +154,32 @@ function EmailList() {
                     {email.subject}
                   </Typography>
                 </>
-            }
+              }
 
-            <Typography
-              component="span"
-              variant="body2"
-              className={classes.block}
-              color="textSecondary"
-            >
-              {email.content}
-            </Typography>
-          </Box>
+              <Typography
+                component="span"
+                variant="body2"
+                color="textSecondary"
+              >
+                {email.content}
+              </Typography>
+            </Box>
 
 
-          <Box className={classes.dateColumn}>
-            <Typography
-              component="span"
-              variant="body2"
-              color="textPrimary"
-              className={classes.emailDate}>
-              {parseDate(email.received)}
-            </Typography>
-            <Favorite onClick={()=>handleStarredClick} email={email}/>
+            <Box className={classes.inner}>
+              <Typography
+                component="span"
+                variant="body2"
+                color="textPrimary"
+                className={classes.emailDate}>
+                {parseDate(email.received)}
+              </Typography>
+              <br></br>
+              <Favorite
+                className={classes.star}
+                onClick={()=>handleStarredClick}
+                email={email}/>
+            </Box>
           </Box>
         </ListItem>
       ))}

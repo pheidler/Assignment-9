@@ -41,6 +41,7 @@ function Compose() {
   const classes = useStyles();
   const history = useHistory();
   const [recipient, setRecipient] = useState('');
+  const [recipientError, setRecipientError] = useState(false);
   const [subject, setSubject] = useState('');
   const [content, setContent] = useState('');
   const {user, setUser} = React.useContext(SharedContext);
@@ -52,7 +53,7 @@ function Compose() {
   const storedInfo = JSON.parse(item);
   const bearerToken = storedInfo ? storedInfo.accessToken : '';
   const bearerEmail = storedInfo ? storedInfo.email.replace(/\@/g, '%40') : '';
-
+  console.log(recipientError);
   useEffect(async () => {
     await fetch(`http://localhost:3010/v0/user?email=${bearerEmail}`, {
       method: 'get',
@@ -76,7 +77,7 @@ function Compose() {
           }
           console.log(error.toString());
         });
-  });
+  }, []);
 
   return (
     <Paper className={classes.paper}>
@@ -102,11 +103,20 @@ function Compose() {
           </Box>
         </Box>
       </Toolbar>
-      <TextField
-        value={recipient}
-        onChange={(e)=>setRecipient(e.target.value)}
-        className={classes.composeInput}
-        label="To" />
+      {
+        recipientError ?
+        <TextField
+          error
+          value={recipient}
+          onChange={(e)=>updateRecipient(e.target.value)}
+          className={classes.composeInput}
+          label="To" /> :
+          <TextField
+            value={recipient}
+            onChange={(e)=> updateRecipient(e.target.value)}
+            className={classes.composeInput}
+            label="To" />
+      }
       <TextField
         value={subject}
         onChange={(e)=>setSubject(e.target.value)}
@@ -136,7 +146,7 @@ function Compose() {
         'name': '',
         'email': recipient,
       },
-      'subject': subject,
+      'subject': subject ? subject : '',
       'content': content,
     };
 
@@ -150,19 +160,31 @@ function Compose() {
         'Authorization': `Bearer ${bearerToken}`,
       },
     }).then((response) => {
+      console.log(response);
       if (!response.ok) {
         throw response;
       }
-      return response.json();
+      history.push('/main');
     })
         .catch((error) => {
           console.log(error);
-          if (error.status >= 401) {
-            history.push('/');
+          switch (error.status) {
+            case 400:
+              setRecipientError(true);
+              setRecipient('');
+              break;
+            default:
+              history.push('/main');
           }
-          console.log(error.toString());
         });
-    history.push('/main');
+  }
+  /**
+   * Udpate recipient field
+   * @param{string} value
+   */
+  function updateRecipient(value) {
+    setRecipientError(false);
+    setRecipient(value);
   }
 }
 
