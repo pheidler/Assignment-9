@@ -64,7 +64,8 @@ const useStyles = makeStyles((theme) => ({
  */
 function EmailList() {
   const {mailbox,
-    setSelectedEmail} = React.useContext(SharedContext);
+    setSelectedEmail, user} = React.useContext(SharedContext);
+  console.log(user);
   const [mail, setMail] = useState([]);
   const history = useHistory();
   const currentDate = new Date();
