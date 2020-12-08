@@ -9,7 +9,7 @@ import {makeStyles} from '@material-ui/core/styles';
 const useStyles = makeStyles((theme) => ({
   starIcon: {
     marginTop: '10px',
-    marginLeft: '30px',
+    marginLeft: '20px',
   },
 }));
 

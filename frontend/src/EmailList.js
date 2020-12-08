@@ -21,14 +21,12 @@ const useStyles = makeStyles((theme) => ({
   },
   emailList: {
     width: '100%',
+    height: '100vh',
   },
   dateColumn: {
     minWidth: '15%',
     display: 'block',
     position: 'relative',
-  },
-  emailDate: {
-    right: '0px',
   },
   starIcon: {
     marginTop: '10px',
@@ -42,6 +40,21 @@ const useStyles = makeStyles((theme) => ({
   bold: {
     fontWeight: 'bold',
   },
+  outer: {
+    width: '100%',
+    display: 'flex',
+  },
+  grow: {
+    flexGrow: 1,
+    display: 'block',
+    textOverflow: 'ellipsis',
+    overflow: 'hidden',
+    whiteSpace: 'nowrap',
+  },
+  inner: {
+    display: 'block',
+
+  },
 
 }));
 
@@ -53,7 +66,6 @@ function EmailList() {
   const {mailbox,
     setSelectedEmail} = React.useContext(SharedContext);
   const [mail, setMail] = useState([]);
-  const [deprecated, setDeprecated] = useState(false);
   const history = useHistory();
   const currentDate = new Date();
   const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep',
@@ -64,8 +76,8 @@ function EmailList() {
     console.log('Not signed in!');
     return;
   }
-  const user = JSON.parse(item);
-  const bearerToken = user ? user.accessToken : '';
+  const storedInfo = JSON.parse(item);
+  const bearerToken = storedInfo ? storedInfo.accessToken : '';
 
   /* API call to get emails */
   useEffect(async () => {
@@ -91,14 +103,12 @@ function EmailList() {
           }
           console.log(error.toString());
         });
-    setDeprecated(false);
-  }, [mailbox, deprecated]);
+  }, [mailbox]);
   const sortedEmails = mail.sort((a, b) => {
     const bDate = new Date(b.received);
     const aDate = new Date(a.received);
     return bDate - aDate;
   });
-  console.log(sortedEmails);
   const classes = useStyles();
   return (
     <List
@@ -112,12 +122,15 @@ function EmailList() {
           button
           alignItems="flex-start"
           onClick={() => viewEmail(email)}>
-          <Avatar
-            className={classes.profilePicture}>
-            {email.from.name[0]}
-          </Avatar>
-          <Box className={classes.dateColumn}>
-            {
+          <Box className={classes.outer}>
+            <Box className={classes.inner}>
+              <Avatar
+                className={classes.profilePicture}>
+                {email.from.name[0]}
+              </Avatar>
+            </Box>
+            <Box className={classes.grow}>
+              {
               email.unread ?
               <>
                 <Typography
@@ -141,28 +154,32 @@ function EmailList() {
                     {email.subject}
                   </Typography>
                 </>
-            }
+              }
 
-            <Typography
-              component="span"
-              variant="body2"
-              className={classes.block}
-              color="textSecondary"
-            >
-              {email.content}
-            </Typography>
-          </Box>
+              <Typography
+                component="span"
+                variant="body2"
+                color="textSecondary"
+              >
+                {email.content}
+              </Typography>
+            </Box>
 
 
-          <Box className={classes.dateColumn}>
-            <Typography
-              component="span"
-              variant="body2"
-              color="textPrimary"
-              className={classes.emailDate}>
-              {parseDate(email.received)}
-            </Typography>
-            <Favorite onClick={()=>handleStarredClick} email={email}/>
+            <Box className={classes.inner}>
+              <Typography
+                component="span"
+                variant="body2"
+                color="textPrimary"
+                className={classes.emailDate}>
+                {parseDate(email.received)}
+              </Typography>
+              <br></br>
+              <Favorite
+                className={classes.star}
+                onClick={()=>handleStarredClick}
+                email={email}/>
+            </Box>
           </Box>
         </ListItem>
       ))}

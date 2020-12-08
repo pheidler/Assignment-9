@@ -27,6 +27,7 @@ const useStyles = makeStyles((theme) => ({
     flexGrow: 1,
     padding: theme.spacing(1),
     width: '100%',
+    height: '100vh',
   },
   mailView: {
     width: '100%',

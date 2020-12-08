@@ -81,3 +81,28 @@ exports.updateEmail = async (id, updatedEmail) => {
 
   return result;
 };
+
+exports.insertEmail = async (email) => {
+  const sentTime = new Date();
+  email.sent = sentTime.toISOString();
+  email.received = sentTime.toISOString();
+  emailString = JSON.stringify(email);
+  emailString = emailString.replace(/'/g, "''");
+
+  const query = `
+    INSERT INTO mail(mailbox, email, mail, unread) VALUES ('Sent', '${email.from.email}', '${emailString}', false);
+    INSERT INTO mail(mailbox, email, mail) VALUES ('Inbox', '${email.to.email}', '${emailString}');
+  `;
+
+  const result = await pool.query(query);
+  return result;
+}
+
+exports.selectUser = async (email) => {
+  const query = `
+    SELECT email, profilePicture, name, showAvatar FROM users WHERE email = '${email}'
+  `;
+
+  const {rows} = await pool.query(query);
+  return rows[0];
+}

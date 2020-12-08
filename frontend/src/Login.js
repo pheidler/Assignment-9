@@ -7,21 +7,21 @@ import {useHistory} from 'react-router-dom';
  * @return {object} JSX
  */
 function Login() {
-  const [user, setUser] = React.useState({email: '', password: ''});
+  const [username, setUsername] = React.useState({email: '', password: ''});
   const history = useHistory();
 
   const handleInputChange = (event) => {
     const {value, name} = event.target;
-    const u = user;
+    const u = username;
     u[name] = value;
-    setUser(u);
+    setUsername(u);
   };
 
   const onSubmit = (event) => {
     event.preventDefault();
     fetch('http://localhost:3010/v0/authenticate', {
       method: 'POST',
-      body: JSON.stringify(user),
+      body: JSON.stringify(username),
       headers: {
         'Content-Type': 'application/json',
       },
