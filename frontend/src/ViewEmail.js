@@ -13,10 +13,10 @@ import Paper from '@material-ui/core/Paper';
 import Avatar from '@material-ui/core/Avatar';
 import Typography from '@material-ui/core/Typography';
 import ReplyIcon from '@material-ui/icons/Reply';
-import ListItemText from '@material-ui/core/ListItemText';
 import Favorite from './Favorite';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
+import Grid from '@material-ui/core/Grid';
 
 
 import {makeStyles} from '@material-ui/core/styles';
@@ -36,12 +36,44 @@ const useStyles = makeStyles((theme) => ({
     display: 'block',
   },
   profilePicture: {
-    marginRight: '10px',
+    marginLeft: '10px',
     marginTop: '10px',
+    width: '55px',
+    height: '55px',
   },
   saveMailbox: {
     color: 'black',
     marginLeft: '5px',
+  },
+  mailbox: {
+    backgroundColor: 'lightgrey',
+    position: 'relative',
+    width: '15%',
+    textAlign: 'center',
+    marginTop: '-10px',
+  },
+  firstRow: {
+    width: '100%',
+    display: 'flex',
+    alignContent: 'space-between',
+  },
+  userInfo: {
+    textAlign: 'left',
+    marginTop: '10px',
+  },
+  avatar: {
+    alignItems: 'right',
+  },
+  gridIcons: {
+    display: 'block',
+  },
+  replyIcon: {
+    marginTop: '10px',
+    marginLeft: '20px',
+  },
+  content: {
+    marginTop: '10px',
+    marginLeft: '20px',
   },
 }));
 /**
@@ -194,48 +226,37 @@ function ViewEmail() {
           </Box>
         </Box>
       </Toolbar>
-      <h3>{selectedEmail.subject}</h3>
-      <h4>{mailbox}</h4>
-      <Avatar
-        className={classes.profilePicture}>
-        {selectedEmail.from.name[0]}
-      </Avatar>
-      <ListItemText
-        primary={selectedEmail.from.name}
-        secondary={
-          <React.Fragment>
-            <Typography
-              component="span"
-              variant="body2"
-              className={classes.block}
-              color="textPrimary"
-            >
-              {selectedEmail.subject}
-              <br></br>
-            </Typography>
-            <Typography
-              component="span"
-              variant="body2"
-              className={classes.block}
-              color="textSecondary"
-            >
-              {selectedEmail.content}
-            </Typography>
-          </React.Fragment>
-        }/>
-      <Box className={classes.dateColumn}>
-        <Typography
-          component="span"
-          variant="body2"
-          color="textPrimary"
-          className={classes.selectedEmailDate}>
-          {parseDate(selectedEmail.received)}
-        </Typography>
-        <Favorite email={selectedEmail}/>
-        <ReplyIcon
-          onClick={()=>replyTo()}/>
-
-      </Box>
+      <Grid container>
+        <Grid item xs={12} className={classes.subject}>
+          <h3>{selectedEmail.subject}</h3>
+          <Typography className={classes.mailbox}>{mailbox}</Typography>
+        </Grid>
+        <Grid item xs={2} className={classes.avatar}>
+          <Avatar
+            className={classes.profilePicture}>
+            {selectedEmail.from.name[0]}
+          </Avatar>
+        </Grid>
+        <Grid item xs={8} className={classes.userInfo}>
+          <Typography>
+            {selectedEmail.from.name}
+          </Typography>
+          <Typography>
+            {`${selectedEmail.from.email}
+               ${parseDate(selectedEmail.received)}`}
+          </Typography>
+        </Grid>
+        <Grid item xs={2} className={classes.gridIcons}>
+          <Favorite email={selectedEmail}/>
+          <br></br>
+          <ReplyIcon
+            className={classes.replyIcon}
+            onClick={()=>replyTo()}/>
+        </Grid>
+      </Grid>
+      <Typography className={classes.content}>
+        {selectedEmail.content}
+      </Typography>
     </Paper>
   );
 
