@@ -53,7 +53,6 @@ function Compose() {
   const storedInfo = JSON.parse(item);
   const bearerToken = storedInfo ? storedInfo.accessToken : '';
   const bearerEmail = storedInfo ? storedInfo.email.replace(/\@/g, '%40') : '';
-  console.log(recipientError);
   useEffect(async () => {
     await fetch(`http://localhost:3010/v0/user?email=${bearerEmail}`, {
       method: 'get',
