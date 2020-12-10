@@ -4,6 +4,7 @@ import StarIcon from '@material-ui/icons/Star';
 import StarBorderIcon from '@material-ui/icons/StarBorder';
 import PropTypes from 'prop-types';
 import {makeStyles} from '@material-ui/core/styles';
+import SharedContext from './SharedContext';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -21,7 +22,7 @@ const useStyles = makeStyles((theme) => ({
 function Favorite(props) {
   const classes = useStyles();
   const [starred, setStarred] = useState(props.email.starred);
-
+  const {mailbox} = React.useContext(SharedContext);
   const item = localStorage.getItem('user');
   const user = JSON.parse(item);
   const bearerToken = user ? user.accessToken : '';
@@ -48,6 +49,7 @@ function Favorite(props) {
     event.stopPropagation();
 
     email.starred = !email.starred;
+    email.mailbox = mailbox;
 
     await fetch(`http://localhost:3010/v0/mail/${email['id']}`, {
       method: 'POST',

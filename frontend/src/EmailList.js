@@ -210,6 +210,8 @@ function EmailList() {
    */
   async function viewEmail(email) {
     email.unread = false;
+    email.mailbox = mailbox;
+
     await fetch(`http://localhost:3010/v0/mail/${email['id']}`, {
       method: 'POST',
       body: JSON.stringify(email),

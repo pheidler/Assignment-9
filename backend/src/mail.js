@@ -32,7 +32,7 @@ exports.postNewMail = async (req, res) => {
   const email = req.body;
 
   const result = await db.insertEmail(email);
-  console.log(result);
+  console.log('result');
   res.status(200).json({'code': 200, 'message': 'Success: Email has been sent.'});
 }
 

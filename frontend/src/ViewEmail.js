@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {useHistory} from 'react-router-dom';
 
 import SharedContext from './SharedContext';
@@ -45,8 +45,14 @@ const useStyles = makeStyles((theme) => ({
  */
 function ViewEmail() {
   const classes = useStyles();
-  const {selectedEmail, mailbox} = React.useContext(SharedContext);
+  const {selectedEmail,
+    mailbox, user, setUser} = React.useContext(SharedContext);
+  console.log(user);
   const history = useHistory();
+  const item = localStorage.getItem('user');
+  const storedInfo = JSON.parse(item);
+  const bearerToken = storedInfo ? storedInfo.accessToken : '';
+  const bearerEmail = storedInfo ? storedInfo.email.replace(/\@/g, '%40') : '';
 
   const currentDate = new Date();
   const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep',
@@ -58,6 +64,31 @@ function ViewEmail() {
     history.push('/main');
     return null;
   }
+
+  useEffect(async () => {
+    await fetch(`http://localhost:3010/v0/user?email=${bearerEmail}`, {
+      method: 'get',
+      headers: new Headers({
+        'Authorization': `Bearer ${bearerToken}`,
+        'Content-Type': 'application/x-www-form-urlencoded',
+      }),
+    })
+        .then((response) => {
+          if (!response.ok) {
+            throw response;
+          }
+          return response.json();
+        })
+        .then((json) => {
+          setUser(json);
+        })
+        .catch((error) => {
+          if (error.status >= 400) {
+            history.push('/');
+          }
+          console.log(error.toString());
+        });
+  }, []);
 
   console.log(selectedEmail);
   return (
@@ -157,8 +188,30 @@ function ViewEmail() {
    * Delete email object
    * @param {object} email
    */
-  function deleteEmail() {
-    console.log('deleting');
+  async function deleteEmail() {
+    selectedEmail.mailbox = 'Trash';
+
+    await fetch(`http://localhost:3010/v0/mail/${selectedEmail['id']}`, {
+      method: 'POST',
+      body: JSON.stringify(selectedEmail),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${bearerToken}`,
+      },
+    }).then((response) => {
+      if (!response.ok) {
+        throw response;
+      }
+      return response.json();
+    })
+        .catch((error) => {
+          console.log(error);
+          if (error.status >= 401) {
+            history.push('/');
+          }
+          console.log(error.toString());
+        });
+    history.push('/main');
   }
   /**
    * Delete email object
@@ -171,8 +224,30 @@ function ViewEmail() {
    * Delete email object
    * @param {object} email
    */
-  function markAsUnread() {
-    console.log('Marking as unread');
+  async function markAsUnread() {
+    selectedEmail.mailbox = mailbox;
+    selectedEmail.unread = true;
+
+    await fetch(`http://localhost:3010/v0/mail/${selectedEmail['id']}`, {
+      method: 'POST',
+      body: JSON.stringify(selectedEmail),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${bearerToken}`,
+      },
+    }).then((response) => {
+      if (!response.ok) {
+        throw response;
+      }
+      return response.json();
+    })
+        .catch((error) => {
+          console.log(error);
+          if (error.status >= 401) {
+            history.push('/');
+          }
+          console.log(error.toString());
+        });
   }
 
   /**
