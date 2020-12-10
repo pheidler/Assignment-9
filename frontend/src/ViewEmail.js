@@ -31,10 +31,6 @@ const useStyles = makeStyles((theme) => ({
     width: '100%',
     height: '100vh',
   },
-  mailView: {
-    width: '100%',
-    display: 'block',
-  },
   profilePicture: {
     marginLeft: '10px',
     marginTop: '10px',
@@ -51,11 +47,6 @@ const useStyles = makeStyles((theme) => ({
     width: '15%',
     textAlign: 'center',
     marginTop: '-10px',
-  },
-  firstRow: {
-    width: '100%',
-    display: 'flex',
-    alignContent: 'space-between',
   },
   userInfo: {
     textAlign: 'left',
