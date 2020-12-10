@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {useHistory} from 'react-router-dom';
 
 import SharedContext from './SharedContext';
@@ -15,6 +15,8 @@ import Typography from '@material-ui/core/Typography';
 import ReplyIcon from '@material-ui/icons/Reply';
 import ListItemText from '@material-ui/core/ListItemText';
 import Favorite from './Favorite';
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
 
 
 import {makeStyles} from '@material-ui/core/styles';
@@ -37,6 +39,10 @@ const useStyles = makeStyles((theme) => ({
     marginRight: '10px',
     marginTop: '10px',
   },
+  saveMailbox: {
+    color: 'black',
+    marginLeft: '5px',
+  },
 }));
 /**
  * A full fledged web app
@@ -46,14 +52,13 @@ const useStyles = makeStyles((theme) => ({
 function ViewEmail() {
   const classes = useStyles();
   const {selectedEmail,
-    mailbox, user, setUser} = React.useContext(SharedContext);
-  console.log(user);
+    mailbox, setMailbox, user, setUser} = React.useContext(SharedContext);
+  const [anchorEl, setAnchorEl] = useState(null);
   const history = useHistory();
   const item = localStorage.getItem('user');
   const storedInfo = JSON.parse(item);
   const bearerToken = storedInfo ? storedInfo.accessToken : '';
   const bearerEmail = storedInfo ? storedInfo.email.replace(/\@/g, '%40') : '';
-
   const currentDate = new Date();
   const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep',
     'Oct', 'Nov', 'Dec'];
@@ -65,6 +70,12 @@ function ViewEmail() {
     return null;
   }
 
+  let userMailboxes;
+  if (Object.keys(user).length === 0 || user === undefined) {
+    userMailboxes = [];
+  } else {
+    userMailboxes = user.mailboxes;
+  }
   useEffect(async () => {
     await fetch(`http://localhost:3010/v0/user?email=${bearerEmail}`, {
       method: 'get',
@@ -90,7 +101,46 @@ function ViewEmail() {
         });
   }, []);
 
-  console.log(selectedEmail);
+  /** Click handler for menu
+   * https://codesandbox.io/s/sm1zv?file=/demo.js:267-343
+   * @param {event} event
+   */
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  /** Click handler for menu
+   * @param{string} mailbox
+   * https://codesandbox.io/s/sm1zv?file=/demo.js:267-343
+   */
+  const handleClose = (async (mailbox) => {
+    if (typeof(mailbox) === 'string') {
+      selectedEmail.mailbox = mailbox;
+
+      await fetch(`http://localhost:3010/v0/mail/${selectedEmail['id']}`, {
+        method: 'POST',
+        body: JSON.stringify(selectedEmail),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${bearerToken}`,
+        },
+      }).then((response) => {
+        if (!response.ok) {
+          throw response;
+        }
+        setMailbox(mailbox);
+        return response.json();
+      })
+          .catch((error) => {
+            console.log(error);
+            if (error.status >= 401) {
+              history.push('/');
+            }
+            console.log(error.toString());
+          });
+    }
+    setAnchorEl(null);
+  });
+
   return (
     <Paper className={classes.paper}>
       <Toolbar className={classes.header}>
@@ -114,13 +164,24 @@ function ViewEmail() {
             </IconButton>
           </Box>
           <Box>
-            <IconButton
-              color="inherit"
-              edge="end"
-              onClick={() => saveInbox()}
-            >
+            <IconButton aria-controls="simple-menu"
+              className={classes.saveMailbox}
+              onClick={handleClick}>
               <SaveAltIcon/>
             </IconButton>
+            <Menu
+              id="simple-menu"
+              anchorEl={anchorEl}
+              keepMounted
+              open={Boolean(anchorEl)}
+              onClose={handleClose}
+            >
+              {userMailboxes.map((mailbox) => (
+                <MenuItem
+                  key={mailbox}
+                  onClick={() => handleClose(mailbox)}>{mailbox}</MenuItem>
+              ))}
+            </Menu>
           </Box>
           <Box>
             <IconButton
@@ -177,6 +238,7 @@ function ViewEmail() {
       </Box>
     </Paper>
   );
+
   /**
    * Reply to selected email
    * @param {object} email
@@ -212,13 +274,6 @@ function ViewEmail() {
           console.log(error.toString());
         });
     history.push('/main');
-  }
-  /**
-   * Delete email object
-   * @param {object} email
-   */
-  function saveInbox() {
-    console.log('Saving to inbox');
   }
   /**
    * Delete email object
