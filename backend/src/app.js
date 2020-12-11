@@ -37,6 +37,8 @@ app.get('/v0/mailboxes', auth.check, mail.getMailboxes);
 app.post('/v0/mail/:id', auth.check, mail.postMail);
 app.post('/v0/mail', auth.check, mail.postNewMail);
 app.get('/v0/user', auth.check, mail.getUser);
+app.post('/v0/user', auth.check, mail.postUser);
+
 
 
 

@@ -4,6 +4,7 @@ import {useHistory} from 'react-router-dom';
 import PropTypes from 'prop-types';
 import Avatar from '@material-ui/core/Avatar';
 
+import SharedContext from './SharedContext';
 
 /**
  * A full fledged web app
@@ -14,13 +15,14 @@ function PersonalAvatar(props) {
   const email = props.email;
   const name = props.name;
   const styleName = props.styleName;
+  const isProfilePage = props.isProfilePage;
   const history = useHistory();
   const item = localStorage.getItem('user');
   const storedInfo = JSON.parse(item);
   const bearerToken = storedInfo ? storedInfo.accessToken : '';
   const bearerEmail = email ? email.replace(/\@/g, '%40') : '';
   const [picture, setPicture] = useState('');
-
+  const {user} = React.useContext(SharedContext);
 
   useEffect(async () => {
     await fetch(`http://localhost:3010/v0/user?email=${bearerEmail}`, {
@@ -37,7 +39,9 @@ function PersonalAvatar(props) {
           return response.json();
         })
         .then((json) => {
-          setPicture(json['profilepicture']);
+          if (json.showavatar || isProfilePage) {
+            setPicture(json['profilepicture']);
+          }
         })
         .catch((error) => {
           if (error.status >= 400) {
@@ -45,7 +49,7 @@ function PersonalAvatar(props) {
           }
           console.log(error.toString());
         });
-  }, [picture]);
+  }, [picture, user]);
   return (
     <>
       {
@@ -55,7 +59,7 @@ function PersonalAvatar(props) {
         src={picture}>
       </Avatar> :
       <Avatar className={styleName}>
-        {name[0]}
+        {name ? name[0] : ''}
       </Avatar>
       }
     </>
@@ -66,6 +70,7 @@ PersonalAvatar.propTypes = {
   email: PropTypes.string,
   name: PropTypes.string,
   styleName: PropTypes.string,
+  isProfilePage: PropTypes.bool,
 };
 
 export default PersonalAvatar;

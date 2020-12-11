@@ -28,6 +28,35 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/User'
+    post:
+      description: Update a user's information
+      requestBody:
+        description: New user information
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        200:
+          description: Successfully updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Success'
+        404:
+          description: User cannot be found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        default:
+          description: Unexpected Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
   /mail:
     get:
       parameters:
