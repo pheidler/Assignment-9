@@ -40,8 +40,12 @@ exports.getUser = async (req, res) => {
   const email = req.query.email;
   const result = await db.selectUser(email);
   res.status(200).json(result);
+}
 
-
+exports.postUser = async (req, res) => {
+  const user = req.body;
+  const result = await db.updateUser(user);
+  res.status(200).json({'code': 200, 'message': 'Success: User has been updated.'});
 }
 /* Helper functions */
 

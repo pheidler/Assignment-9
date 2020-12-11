@@ -72,7 +72,6 @@ exports.selectUserMailboxes = async (user) => {
 }
 
 exports.updateEmail = async (id, updatedEmail) => {
-  console.log(updatedEmail);
   const query = `
     UPDATE mail
     SET starred = ${updatedEmail.starred}, unread = ${updatedEmail.unread}, mailbox = '${updatedEmail.mailbox}'
@@ -106,4 +105,16 @@ exports.selectUser = async (email) => {
 
   const {rows} = await pool.query(query);
   return rows[0];
+}
+
+exports.updateUser = async (user) => {
+  console.log(user);
+  const query = `
+    UPDATE users
+    SET profilePicture = '${user.profilepicture}', showAvatar = ${user.showavatar}
+    WHERE email = '${user.email}'
+  `;
+
+  const result = await pool.query(query);
+  return result;
 }

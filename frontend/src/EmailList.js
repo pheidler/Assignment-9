@@ -3,7 +3,7 @@ import {makeStyles} from '@material-ui/core/styles';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import Typography from '@material-ui/core/Typography';
-import Avatar from '@material-ui/core/Avatar';
+import PersonalAvatar from './PersonalAvatar';
 import Favorite from './Favorite';
 
 import Box from '@material-ui/core/Box';
@@ -32,7 +32,7 @@ const useStyles = makeStyles((theme) => ({
     marginTop: '10px',
     marginLeft: '30px',
   },
-  profilePicture: {
+  mainAvatar: {
     marginLeft: '-10px',
     marginRight: '10px',
     marginTop: '10px',
@@ -127,10 +127,10 @@ function EmailList() {
           onClick={() => viewEmail(email)}>
           <Box className={classes.outer}>
             <Box className={classes.inner}>
-              <Avatar
-                className={classes.profilePicture}>
-                {email.from.name[0]}
-              </Avatar>
+              <PersonalAvatar
+                email={email['from']['email']}
+                name={email['from']['name']}
+                styleName={classes.mainAvatar}/>
             </Box>
             <Box className={classes.grow}>
               {

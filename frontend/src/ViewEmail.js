@@ -10,7 +10,7 @@ import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import Box from '@material-ui/core/Box';
 import IconButton from '@material-ui/core/IconButton';
 import Paper from '@material-ui/core/Paper';
-import Avatar from '@material-ui/core/Avatar';
+import PersonalAvatar from './PersonalAvatar';
 import Typography from '@material-ui/core/Typography';
 import ReplyIcon from '@material-ui/icons/Reply';
 import Favorite from './Favorite';
@@ -31,12 +31,6 @@ const useStyles = makeStyles((theme) => ({
     width: '100%',
     height: '100vh',
   },
-  profilePicture: {
-    marginLeft: '10px',
-    marginTop: '10px',
-    width: '55px',
-    height: '55px',
-  },
   saveMailbox: {
     color: 'black',
     marginLeft: '5px',
@@ -52,8 +46,14 @@ const useStyles = makeStyles((theme) => ({
     textAlign: 'left',
     marginTop: '10px',
   },
+  profilePicture: {
+    marginLeft: '10px',
+    marginTop: '10px',
+    width: '55px',
+    height: '55px',
+  },
   avatar: {
-    alignItems: 'right',
+    alignItems: 'center',
   },
   gridIcons: {
     display: 'block',
@@ -223,10 +223,10 @@ function ViewEmail() {
           <Typography className={classes.mailbox}>{mailbox}</Typography>
         </Grid>
         <Grid item xs={2} className={classes.avatar}>
-          <Avatar
-            className={classes.profilePicture}>
-            {selectedEmail.from.name[0]}
-          </Avatar>
+          <PersonalAvatar
+            email={selectedEmail['from']['email']}
+            name={selectedEmail['from']['name']}
+            styleName={classes.profilePicture}/>
         </Grid>
         <Grid item xs={8} className={classes.userInfo}>
           <Typography>
